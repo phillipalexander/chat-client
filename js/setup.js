@@ -3,7 +3,11 @@
 // Conform all stuff to text.
 
 
-
+var Chat = {
+  Templates: {
+    listItem: Handlebars.compile('<li class="rooms{{key}}"><a href=""><strong>{{key}}</strong></a></li>')
+  }
+};
 
 
 if(!/(&|\?)username=/.test(window.location.search)){
@@ -31,7 +35,9 @@ var populateChatRoomsSideBar = function(data){
   });
   _.each(uniqueRooms, function(value, key){
     if (key !== 'undefined'){
-      $('.roomNav').append('<li class="rooms" id="room' + key + '"> <a href=""> <strong>' + key + '</strong> </a> </li>'); // Change href.
+      $('.roomNav').append(Chat.Templates.listItem({
+        room: key
+      })); // Change href.
     } else {
       $('.roomNav').append('<li class="rooms" id="room' + 'homeless' + '"> <a href=""> <strong>' + 'homeless' + '</strong> </a> </li>'); // Change href.      
     }
@@ -48,7 +54,7 @@ var populateUsersSideBar = function(currentChatRoom, data){
     if (key !== 'undefined'){
       $('.userNav').append('<li class="users" id="user' + key + '"> <a href=""> <strong>@' + key + '</strong> </a> </li>'); // Change href.
     } else {
-      $('.userNav').append('<li class="users" id="user' + 'anonymous' + '"> <a href=""> <strong>' + 'homeless' + '</strong> </a> </li>'); // Change href.      
+      $('.userNav').append('<li class="users" id="user' + 'anonymous' + '"> <a href=""> <strong>' + 'homeless' + '</strong> </a> </li>'); // Change href.
     }
   });
 };
@@ -63,7 +69,7 @@ var populateStream = function(currentChatRoom, currentUser, data){
 };
 var updatePage = function(){
   // get all of the data
-  $.ajax('https://api.parse.com/1/classes/fuckOff', {
+  $.ajax('https://api.parse.com/1/classes/messages/', {
     contentType: 'application/json',
     success: function(data){
       populateChatRoomsSideBar(data.results);
