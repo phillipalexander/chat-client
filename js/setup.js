@@ -63,14 +63,11 @@ var populateStream = function(currentChatRoom, currentUser, data){
 };
 var updatePage = function(){
   // get all of the data
-  $.ajax('https://api.parse.com/1/classes/test56', {
+  $.ajax('https://api.parse.com/1/classes/fuckOff', {
     contentType: 'application/json',
     success: function(data){
       populateChatRoomsSideBar(data.results);
       populateUsersSideBar('foo', data.results);
-
-      // populateUsersSideBar(currentChatRoom, data);
-      
       populateStream('currentChatRoom', 'currentUser', data);
     },
     error: function(data) {
