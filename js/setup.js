@@ -1,3 +1,11 @@
+// TODO:  
+// Check for repeated tweets
+// Conform all stuff to text.
+
+
+
+
+
 if(!/(&|\?)username=/.test(window.location.search)){
   var newSearch = window.location.search;
   if(newSearch !== '' & newSearch !== '?'){
@@ -46,11 +54,16 @@ var populateUsersSideBar = function(currentChatRoom, data){
 };
 
 var populateStream = function(currentChatRoom, currentUser, data){
-  //filter by user
+  var filteredTweets = {};
+  _.each(data.results, function(value){  
+    // if ((value.room === currentChatRoom) && (value.user === currentUser)){
+      $('#tweets').append('<tr class = "tweets" id = ' + value.objectKey + '><td>' + value.username + '</td><td>' + value.text.slice(value.text.indexOf(':') + 2) + '</td><td>' + moment(value.createdAt).fromNow() + '</td></tr>');
+    // }
+  });
 };
 var updatePage = function(){
   // get all of the data
-  $.ajax('https://api.parse.com/1/classes/messages', {
+  $.ajax('https://api.parse.com/1/classes/test56', {
     contentType: 'application/json',
     success: function(data){
       populateChatRoomsSideBar(data.results);
@@ -58,7 +71,7 @@ var updatePage = function(){
 
       // populateUsersSideBar(currentChatRoom, data);
       
-      // populateStream(currentChatRoom, currentUser, data);
+      populateStream('currentChatRoom', 'currentUser', data);
     },
     error: function(data) {
       console.log('Ajax request failed');
