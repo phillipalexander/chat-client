@@ -1,6 +1,7 @@
 // TODO:  
 // Check for repeated tweets
 // Conform all stuff to text.
+// add additional handlebar template support...
 
 
 var Chat = {
@@ -52,16 +53,19 @@ var populateUsersSideBar = function(currentChatRoom, data){
   });
   _.each(uniqueUsers, function(value, key){
     if (key !== 'undefined'){
-      $('.userNav').append('<li class="users" id="user' + key + '"> <a href=""> <strong>@' + key + '</strong> </a> </li>'); // Change href.
+      $('.userNav').append('<li class="button" id="' + key + '"><a href="#" class="btn btn-mini users">' + key + '</a></li>'); // Change href.
+      // $('.userNav').append('<li class="users" id="' + key + '"><strong>@' + key + '</strong></li>'); // Change href.
     } else {
-      $('.userNav').append('<li class="users" id="user' + 'anonymous' + '"> <a href=""> <strong>' + 'homeless' + '</strong> </a> </li>'); // Change href.
+      $('.userNav').append('<li class="users" id="' + 'anonymous' + '"><strong>' + 'homeless' + '</strong></li>'); // Change href.
     }
   });
 };
 
+// <a href="#" class="btn btn-mini">key</a>
+
 var populateStream = function(currentChatRoom, currentUser, data){
   var filteredTweets = {};
-  _.each(data.results, function(value){  
+  _.each(data.results , function(value){  
     // if ((value.room === currentChatRoom) && (value.user === currentUser)){
       $('#tweets').append('<tr class = "tweets" id = ' + value.objectKey + '><td>' + value.username + '</td><td>' + value.text.slice(value.text.indexOf(':') + 2) + '</td><td>' + moment(value.createdAt).fromNow() + '</td></tr>');
     // }
@@ -72,6 +76,7 @@ var updatePage = function(){
   $.ajax('https://api.parse.com/1/classes/messages/', {
     contentType: 'application/json',
     success: function(data){
+      globalData = data;
       populateChatRoomsSideBar(data.results);
       populateUsersSideBar('foo', data.results);
       populateStream('currentChatRoom', 'currentUser', data);
@@ -95,4 +100,9 @@ updatePage();
 //   };
 //   };
 // };
+  $('body')
+    .on('click', '.users', function (event) {
+    console.log(this);
+    // updatePage();
+  });
 
