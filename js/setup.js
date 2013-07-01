@@ -23,16 +23,26 @@ var populateChatRoomsSideBar = function(data){
   });
   _.each(uniqueRooms, function(value, key){
     if (key !== 'undefined'){
-      $('.roomNav').append('<li class="rooms" id="room' + key + '"> <a href="#allRooms"> <strong>' + key + '</strong> </a> </li>'); // Change href.
+      $('.roomNav').append('<li class="rooms" id="room' + key + '"> <a href=""> <strong>' + key + '</strong> </a> </li>'); // Change href.
     } else {
-      $('.roomNav').append('<li class="rooms" id="room' + 'homeless' + '"> <a href="#allRooms"> <strong>' + 'homeless' + '</strong> </a> </li>'); // Change href.      
+      $('.roomNav').append('<li class="rooms" id="room' + 'homeless' + '"> <a href=""> <strong>' + 'homeless' + '</strong> </a> </li>'); // Change href.      
     }
   });
 };
-
-
 var populateUsersSideBar = function(currentChatRoom, data){
-// filter by chatroom
+  var uniqueUsers = {};
+  _.each(data, function(value){
+    // if (value.room === currentChatRoom){
+      uniqueUsers[value.username] = true;
+    // }
+  });
+  _.each(uniqueUsers, function(value, key){
+    if (key !== 'undefined'){
+      $('.userNav').append('<li class="users" id="user' + key + '"> <a href=""> <strong>@' + key + '</strong> </a> </li>'); // Change href.
+    } else {
+      $('.userNav').append('<li class="users" id="user' + 'anonymous' + '"> <a href=""> <strong>' + 'homeless' + '</strong> </a> </li>'); // Change href.      
+    }
+  });
 };
 
 var populateStream = function(currentChatRoom, currentUser, data){
@@ -43,9 +53,8 @@ var updatePage = function(){
   $.ajax('https://api.parse.com/1/classes/messages', {
     contentType: 'application/json',
     success: function(data){
-
-
       populateChatRoomsSideBar(data.results);
+      populateUsersSideBar('foo', data.results);
 
       // populateUsersSideBar(currentChatRoom, data);
       
