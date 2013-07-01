@@ -13,18 +13,61 @@ $.ajaxPrefilter(function(settings, _, jqXHR) {
   jqXHR.setRequestHeader("X-Parse-REST-API-Key", "QC2F43aSAghM97XidJw8Qiy1NXlpL5LR45rhAVAf");
 });
 
-$.ajax('https://api.parse.com/1/classes/messages', {
-  contentType: 'application/json',
-  success: function(data){
-    $('#main').append(data.results[0].username);
-    _.each(data.results, function(value){
-      console.log('yes');
-      if (value.username){
-        $('#tweetStream').append("<tr><td><strong>@" + value.username + "</strong></td><td>" + value.text + "</td></tr>" /* <td><small class='muted'>"  + value.created_at.humane + "</small></td>"*/ );
-      }
-    });
-  },
-  error: function(data) {
-    console.log('Ajax request failed');
-  }
-});
+var populateChatRoomsSideBar = function(data){
+  // filter data by rooms.
+    // parse data, finding unique id's, recording in a hashmap.
+  // display set of filtered rooms.
+  var uniqueRooms = {};
+  _.each(data, function(value){
+    uniqueRooms[value.room] = true;
+  });
+  _.each(uniqueRooms, function(value, key){
+    if (key !== 'undefined'){
+      $('.roomNav').append('<li class="rooms" id="room' + key + '"> <a href="#allRooms"> <strong>' + key + '</strong> </a> </li>'); // Change href.
+    } else {
+      $('.roomNav').append('<li class="rooms" id="room' + 'homeless' + '"> <a href="#allRooms"> <strong>' + 'homeless' + '</strong> </a> </li>'); // Change href.      
+    }
+  });
+};
+
+
+var populateUsersSideBar = function(currentChatRoom, data){
+// filter by chatroom
+};
+
+var populateStream = function(currentChatRoom, currentUser, data){
+  //filter by user
+};
+var updatePage = function(){
+  // get all of the data
+  $.ajax('https://api.parse.com/1/classes/messages', {
+    contentType: 'application/json',
+    success: function(data){
+
+
+      populateChatRoomsSideBar(data.results);
+
+      // populateUsersSideBar(currentChatRoom, data);
+      
+      // populateStream(currentChatRoom, currentUser, data);
+    },
+    error: function(data) {
+      console.log('Ajax request failed');
+    }
+  });
+};
+updatePage();
+
+
+// var templateMessage = function(object) {
+//   return {
+//   datetime: "<td>" + moment(object.createdAt).fromNow() + "</td>",
+//   username: "<td>" + object.username + "</td>",
+//   text: "<td>" + object.text  + "</td>",
+//   room: "<td>" + object.room  + "</td>",
+//   render: function() {
+//     "<tr>" + this.  
+//   };
+//   };
+// };
+

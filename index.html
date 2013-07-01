@@ -2,53 +2,53 @@
 <html>
 
 <head>
-	<title>chatHack</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-	<link rel="stylesheet" href="css/bootstrap.css">
-	<link rel="stylesheet" href="css/bootstrap-responsive.css">
-	<style type="text/css">
+  <title>chatHack</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/bootstrap-responsive.css">
+  <style type="text/css">
 
 
 
-	/* Main marketing message and sign up button */
-	.jumbotron {
-		margin: 60px 0;
-		text-align: center;
-	}
-	.jumbotron h1 {
-		font-size: 96px
-		line-height: 1;
-	}
-	</style>
+  /* Main marketing message and sign up button */
+  .jumbotron {
+    margin: 60px 0;
+    text-align: center;
+  }
+  .jumbotron h1 {
+    font-size: 96px
+    line-height: 1;
+  }
+  </style>
 </head>
 <body>
-	<div class="navbar">
-		<div class="navbar-inner">
-			<div class="container-fluid">
-				<a class="brand" href="#"><b>chatHack</b></a>
-				<div class="navbar-content">
-					<ul class="nav"></ul>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="container-fluid">
-		<div class="row-fluid">
-			<!-- ============= SIDEBAR  ============= -->
-			<div class="span3">
-				<div class="well well-small">
-					<ul class="nav  nav-pills nav-stacked">
-						<li class="nav-header">Chat Rooms:</li>
-						<li class="pickRoom" id="">
-							<a href="#allRooms"> <strong>All</strong>
-							</a>
-						</li>
-					</ul>
-				</div>
-				<!-- ============= TIP BOX ============= -->
+  <div class="navbar">
+    <div class="navbar-inner">
+      <div class="container-fluid">
+        <a class="brand" href="#"><b>chatHack</b></a>
+        <div class="navbar-content">
+          <ul class="nav"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <!-- ============= SIDEBAR  ============= -->
+      <div class="span3">
         <div class="well well-small">
-          <ul class="nav  nav-pills nav-stacked">
+          <ul class="roomNav nav-pills nav-stacked">
+            <li class="nav-header">Chat Rooms:</li>
+            <li class="pickRoom" id="">
+              <a href="#allRooms"> <strong>All</strong>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- ============= TIP BOX ============= -->
+        <div class="well well-small">
+          <ul class="userNav nav-pills nav-stacked">
             <li class="nav-header">Users:</li>
             <li class="pickUser" id="">
               <a href="#allUsers"> <strong>@everyone</strong>
@@ -56,57 +56,57 @@
             </li>
           </ul>
         </div>
-			</div>
-			<!-- ============= MAIN ============= -->
-			<div class="span8">
-				<!-- ============= Modal ============= -->
-				<div id="join" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-						<h3 id="myModalLabel">Say anything</h3>
-					</div>
-					<div class="modal-body">
-						<!-- ============= FORM ============= -->
-						<form class="form-horizontal">
-							<!-- ============= username ============= -->
-							<div class="control-group">
-								<label class="control-label" for="username">username</label>
-								<div class="controls">
-									<input type="text" id="inputUsername" placeholder="username"></div>
-								</div>
-								<!-- ============= message ============= -->
-								<div class="control-group">
-									<label class="control-label" for="message">message</label>
-									<div class="controls">
-										<input type="text" id="inputMessage" placeholder="message" rows="3"></div>
-									</div>
-								</form>
-							</div>
-							<div class="modal-footer">
-								<button class="btn" data-dismiss="modal" aria-hidden="true" id="cancelTweet">Cancel</button>
-								<button class="btn btn-primary" id="publishTweet">Publish</button>
-							</div>
-						</div>
-						<!-- ============= TABLE (STREAMS) ============= -->
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th class="muted">Stream:</th>
-								</tr>
-							</thead>
-							<tbody id="tweetStream">
-							</tbody>
-						</table>
-						<!-- ============= END TABLE (STREAMS) ============= -->
-					</div>
-					<!-- ============= END MAIN ============= -->
-				</div>
-			</div>
-			<script src="js/jquery.js"></script>
-			<script src="js/bootstrap.js"></script>
-			<script src="js/moment.js"></script>
+      </div>
+      <!-- ============= MAIN ============= -->
+      <div class="span8">
+        <!-- ============= Modal ============= -->
+        <div id="join" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Say anything</h3>
+          </div>
+          <div class="modal-body">
+            <!-- ============= FORM ============= -->
+            <form class="form-horizontal">
+              <!-- ============= username ============= -->
+              <div class="control-group">
+                <label class="control-label" for="username">username</label>
+                <div class="controls">
+                  <input type="text" id="inputUsername" placeholder="username"></div>
+                </div>
+                <!-- ============= message ============= -->
+                <div class="control-group">
+                  <label class="control-label" for="message">message</label>
+                  <div class="controls">
+                    <input type="text" id="inputMessage" placeholder="message" rows="3"></div>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true" id="cancelTweet">Cancel</button>
+                <button class="btn btn-primary" id="publishTweet">Publish</button>
+              </div>
+            </div>
+            <!-- ============= TABLE (STREAMS) ============= -->
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="muted">Stream:</th>
+                </tr>
+              </thead>
+              <tbody id="tweetStream">
+              </tbody>
+            </table>
+            <!-- ============= END TABLE (STREAMS) ============= -->
+          </div>
+          <!-- ============= END MAIN ============= -->
+        </div>
+      </div>
+      <script src="js/jquery.js"></script>
+      <script src="js/bootstrap.js"></script>
+      <script src="js/moment.js"></script>
       <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore.js"></script>
       <script src="js/setup.js"></script>
-		</body>
+    </body>
 
-		</html>
+    </html>
