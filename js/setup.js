@@ -1,16 +1,12 @@
-// [x] fix submit button.
-// [ ] Check for repeated tweets
-// [ ] Conform all stuff to text.
-// [ ] add additional handlebar template support...
-// [ ] change selected user filter to colored (css)
-// [x] fir .ajax post.
-// [x] set parameters about username and room selection. 
+// submit message bug
+  // empty text box
+  // update stream
 
 var Chat = {
   Templates: {
     roomItem: Handlebars.compile('<li class="button" id="rooms{{key}}"><a href=# class="btn btn-mini rooms">{{key}}</a></li>'),
     userItem: Handlebars.compile('<li class="button" id="users{{key}}"><a href=# class="btn btn-mini users">{{key}}</a></li>'),
-    messageItem: Handlebars.compile('<tr class="tweets" id="{{objectKey}}"><td>{{username}}</td><td>{{message}}</td><td>{{createdAt}}</td></tr>')
+    messageItem: Handlebars.compile('<tr class="tweets" id="{{objectKey}}"><td>{{userName}}</td><td>{{message}}</td><td>{{createdAt}}</td></tr>')
   }
 };
 
@@ -78,9 +74,10 @@ var populateUsersSideBar = function(currentChatRoom, data){
 // <a href="#" class="btn btn-mini">key</a>
 
 var populateStream = function(currentChatRoom, currentUser, data){
-  _.each(data.results , function(value){
-    if (value.username === undefined) { value.username = 'everyone';}
-    if (value.room === undefined) { value.room = 'all';}
+  _.each(data , function(value){
+    if (value.username === undefined){ value.username = "anonymous";}
+    if (value.room === undefined){ value.room = "roomless";}
+    if (value.text === undefined){ value.text = '';}
     if ((value.room === currentChatRoom || currentChatRoom === 'all') && (value.username === currentUser || currentUser === 'everyone')){
       $('#tweets').append(Chat.Templates.messageItem({
         objectKey: value.objectKey,
@@ -94,25 +91,25 @@ var populateStream = function(currentChatRoom, currentUser, data){
 var submitTweet = function(message){
   $.ajax({
     contentType: 'application/json',
-    url: 'https://api.parse.com/1/classes/messages/',
+    url: 'https://api.parse.com/1/classes/test72472/',
     type: "POST",
-    data: JSON.stringify({"room" : selectedRoom, "username": myUserName, "text": message})
+    data: JSON.stringify({room : selectedRoom, username: myUserName, text: message})
   });
 };
 var updatePage = function(){
   // get all of the data
-  $.ajax('https://api.parse.com/1/classes/messages/', {
+  $.ajax('https://api.parse.com/1/classes/test72472/', {
   // $.ajax('https://api.parse.com/1/classes/messages/?order=-', {
     contentType: 'application/json',
     type: 'GET',
-    data: {order: 'createdAt', limit: 100 },
+    data: {order: '-createdAt', limit: 100 },
     success: function(data){
       $('.roomNav .button').remove();
       $('.userNav .button').remove();
       $('#tweets tr').remove();
+      populateStream(selectedRoom, selectedUser, data.results);
       populateChatRoomsSideBar(data.results);
       populateUsersSideBar(selectedRoom, data.results);
-      populateStream(selectedRoom, selectedUser, data);
     },
     error: function(data) {
       console.log('Ajax request failed');
@@ -134,7 +131,7 @@ $('body')
 
 $('body')
 .on('click', '#submitMsg', function (event) {
-  var msg = $('#submitMsg').value;
+  var msg = $('#submitMsg').val();
   submitTweet(msg);
   updatePage();
   event.preventDefault();
