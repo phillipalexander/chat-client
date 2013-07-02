@@ -7,7 +7,7 @@
 
 var Chat = {
   Templates: {
-    listItem: Handlebars.compile('<li class="rooms{{key}}"><a href=""><strong>{{key}}</strong></a></li>')
+    listItem: Handlebars.compile('<li class="button" id="rooms{{key}}"><a href=# class="btn btn-mini rooms">{{key}}</a></li>')
   }
 };
 
@@ -41,10 +41,10 @@ var populateChatRoomsSideBar = function(data){
   _.each(uniqueRooms, function(value, key){
     if (key !== 'undefined'){
       $('.roomNav').append(Chat.Templates.listItem({
-        room: key
+        key: key
       })); // Change href.
     } else {
-      $('.roomNav').append('<li class="rooms" id="room' + 'homeless' + '"> <a href=""> <strong>' + 'homeless' + '</strong> </a> </li>'); // Change href.      
+      $('.roomNav').append('<li class=button id=' + 'homeless' + '><a href=# class="btn btn-mini rooms">' + 'homeless' + '</a></li>'); // Change href.
     }
   });
 };
@@ -70,6 +70,7 @@ var populateUsersSideBar = function(currentChatRoom, data){
 var populateStream = function(currentChatRoom, currentUser, data){
   var filteredTweets = {};
   _.each(data.results , function(value){  
+    if (value.username === undefined) { value.username = 'anonymous';}
     if ((value.room === currentChatRoom || currentChatRoom === 'all') && (value.username === currentUser || currentUser === 'everyone')){
       $('#tweets').append('<tr class = "tweets" id = ' + value.objectKey + '><td>' + value.username + '</td><td>' + value.text.slice(value.text.indexOf(':') + 2) + '</td><td>' + moment(value.createdAt).fromNow() + '</td></tr>');
     }

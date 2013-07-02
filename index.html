@@ -20,6 +20,11 @@
     font-size: 96px
     line-height: 1;
   }
+
+  ul
+{
+    list-style-type: none;
+}
   </style>
 </head>
 <body>
@@ -41,8 +46,7 @@
           <ul class="roomNav nav-pills nav-stacked">
             <li class="nav-header">Chat Rooms:</li>
             <li class="pickRoom" id="">
-              <a href="#allRooms"> <strong>all</strong>
-              </a>
+              <a href="#allRooms" class="btn btn-info rooms">all</a>
             </li>
           </ul>
         </div>
@@ -51,8 +55,7 @@
           <ul class="userNav nav-pills nav-stacked">
             <li class="nav-header">Users:</li>
             <li class="pickUser" id="">
-              <a href="#allUsers"> <strong>@everyone</strong>
-              </a>
+              <a href="#allUsers" class="btn btn-info users">@everyone</a>
             </li>
           </ul>
         </div>
