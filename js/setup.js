@@ -77,6 +77,14 @@ var populateStream = function(currentChatRoom, currentUser, data){
     }
   });
 };
+var submitTweet = function(message){
+  $.ajax({
+  url: 'https://api.parse.com/1/classes/messages/',
+  type: "POST",
+  data: {room : selectedRoom, username: selectedUser, text: message},
+  dataType: "object"
+  });
+};
 var updatePage = function(){
   // get all of the data
   $.ajax('https://api.parse.com/1/classes/messages/', {
@@ -110,9 +118,24 @@ $('body')
 
 $('body')
   .on('click', '#submitMsg', function (event) {
-    var msg = $('#submitMsg').val();
+    var msg = $('#submitMsg').value;
     // submitTweet(msg);
     console.log(msg);
     // updatePage();
     $().button('reset');
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
