@@ -3,7 +3,7 @@
 // Conform all stuff to text.
 // add additional handlebar template support...
 // figure out how to change the output order of the parse api call (most recenet first)
-//change selected user filter to colored (css)
+// change selected user filter to colored (css)
 
 
 var Chat = {
@@ -97,18 +97,6 @@ var updatePage = function(){
 };
 updatePage();
 
-
-// var templateMessage = function(object) {
-//   return {
-//   datetime: "<td>" + moment(object.createdAt).fromNow() + "</td>",
-//   username: "<td>" + object.username + "</td>",
-//   text: "<td>" + object.text  + "</td>",
-//   room: "<td>" + object.room  + "</td>",
-//   render: function() {
-//     "<tr>" + this.  
-//   };
-//   };
-// };
 $('body')
   .on('click', '.users', function (event) {
     selectedUser = $(this).text();
@@ -120,4 +108,11 @@ $('body')
     updatePage();
   });
 
-
+$('body')
+  .on('click', '#submitMsg', function (event) {
+    var msg = $('#submitMsg').val();
+    // submitTweet(msg);
+    console.log(msg);
+    // updatePage();
+    $().button('reset');
+  });
