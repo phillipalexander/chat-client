@@ -2,6 +2,7 @@
 // Check for repeated tweets
 // Conform all stuff to text.
 // add additional handlebar template support...
+// figure out how to change the output order of the parse api call (most recenet first)
 
 
 var Chat = {
@@ -10,6 +11,9 @@ var Chat = {
   }
 };
 
+//defaults
+var selectedUser = "everyone";
+var selectedRoom = "all";
 
 if(!/(&|\?)username=/.test(window.location.search)){
   var newSearch = window.location.search;
@@ -47,16 +51,16 @@ var populateChatRoomsSideBar = function(data){
 var populateUsersSideBar = function(currentChatRoom, data){
   var uniqueUsers = {};
   _.each(data, function(value){
-    // if (value.room === currentChatRoom){
+    if (value.room === currentChatRoom || currentChatRoom === 'all'){
       uniqueUsers[value.username] = true;
-    // }
+    }
   });
   _.each(uniqueUsers, function(value, key){
     if (key !== 'undefined'){
-      $('.userNav').append('<li class="button" id="' + key + '"><a href="#" class="btn btn-mini users">' + key + '</a></li>'); // Change href.
+      $('.userNav').append('<li class=button id=' + key + '><a href=# class="btn btn-mini users">' + key + '</a></li>'); // Change href.
       // $('.userNav').append('<li class="users" id="' + key + '"><strong>@' + key + '</strong></li>'); // Change href.
     } else {
-      $('.userNav').append('<li class="users" id="' + 'anonymous' + '"><strong>' + 'homeless' + '</strong></li>'); // Change href.
+      $('.userNav').append('<li class="button" id="' + 'anonymous' + '"><a href="#" class="btn btn-mini users">' + "anonymous" + '</a></li>'); // Change href.
     }
   });
 };
@@ -66,20 +70,23 @@ var populateUsersSideBar = function(currentChatRoom, data){
 var populateStream = function(currentChatRoom, currentUser, data){
   var filteredTweets = {};
   _.each(data.results , function(value){  
-    // if ((value.room === currentChatRoom) && (value.user === currentUser)){
+    if ((value.room === currentChatRoom || currentChatRoom === 'all') && (value.username === currentUser || currentUser === 'everyone')){
       $('#tweets').append('<tr class = "tweets" id = ' + value.objectKey + '><td>' + value.username + '</td><td>' + value.text.slice(value.text.indexOf(':') + 2) + '</td><td>' + moment(value.createdAt).fromNow() + '</td></tr>');
-    // }
+    }
   });
 };
 var updatePage = function(){
   // get all of the data
   $.ajax('https://api.parse.com/1/classes/messages/', {
+  // $.ajax('https://api.parse.com/1/classes/messages/?order=-', {
     contentType: 'application/json',
     success: function(data){
-      globalData = data;
+      $('.roomNav .button').remove();
+      $('.userNav .button').remove();
+      $('#tweets tr').remove();
       populateChatRoomsSideBar(data.results);
-      populateUsersSideBar('foo', data.results);
-      populateStream('currentChatRoom', 'currentUser', data);
+      populateUsersSideBar(selectedRoom, data.results);
+      populateStream(selectedRoom, selectedUser, data);
     },
     error: function(data) {
       console.log('Ajax request failed');
@@ -100,9 +107,15 @@ updatePage();
 //   };
 //   };
 // };
-  $('body')
-    .on('click', '.users', function (event) {
-    console.log(this);
-    // updatePage();
+$('body')
+  .on('click', '.users', function (event) {
+    selectedUser = $(this).text();
+    updatePage();
   });
+$('body')
+  .on('click', '.rooms', function (event) {
+    selectedRoom = $(this).text();
+    updatePage();
+  });
+
 
