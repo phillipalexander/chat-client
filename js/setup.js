@@ -3,6 +3,7 @@
 // Conform all stuff to text.
 // add additional handlebar template support...
 // figure out how to change the output order of the parse api call (most recenet first)
+//change selected user filter to colored (css)
 
 
 var Chat = {
@@ -71,7 +72,7 @@ var populateStream = function(currentChatRoom, currentUser, data){
   var filteredTweets = {};
   _.each(data.results , function(value){  
     if (value.username === undefined) { value.username = 'anonymous';}
-    if ((value.room === currentChatRoom || currentChatRoom === 'all') && (value.username === currentUser || currentUser === 'everyone')){
+    if ((value.room === currentChatRoom || currentChatRoom === 'all') && (value.username === currentUser || currentUser === '@everyone')){
       $('#tweets').append('<tr class = "tweets" id = ' + value.objectKey + '><td>' + value.username + '</td><td>' + value.text.slice(value.text.indexOf(':') + 2) + '</td><td>' + moment(value.createdAt).fromNow() + '</td></tr>');
     }
   });
