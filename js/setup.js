@@ -1,10 +1,10 @@
-// TODO:  
-// Check for repeated tweets
-// Conform all stuff to text.
-// add additional handlebar template support...
-// figure out how to change the output order of the parse api call (most recenet first)
-// change selected user filter to colored (css)
-
+// [ ] fix submit button.
+// [ ] Check for repeated tweets
+// [ ] Conform all stuff to text.
+// [ ] add additional handlebar template support...
+// [ ] change selected user filter to colored (css)
+// [ ] fir .ajax post.
+// [ ] set parameters about username and room selection. 
 
 var Chat = {
   Templates: {
@@ -15,13 +15,15 @@ var Chat = {
 //defaults
 var selectedUser = "everyone";
 var selectedRoom = "all";
+var myUserName;
 
 if(!/(&|\?)username=/.test(window.location.search)){
   var newSearch = window.location.search;
   if(newSearch !== '' & newSearch !== '?'){
     newSearch += '&';
   }
-  newSearch += 'username=' + (prompt('What is your name?') || 'anonymous');
+  myUserName = (prompt('What is your name?') || 'anonymous');
+  newSearch += 'username=' + myUserName;
   window.location.search = newSearch;
 }
 
@@ -79,10 +81,10 @@ var populateStream = function(currentChatRoom, currentUser, data){
 };
 var submitTweet = function(message){
   $.ajax({
-  url: 'https://api.parse.com/1/classes/messages/',
-  type: "POST",
-  data: {room : selectedRoom, username: selectedUser, text: message},
-  dataType: "object"
+    contentType: 'application/json',
+    url: 'https://api.parse.com/1/classes/messages/',
+    type: "POST",
+    data: JSON.stringify({"room" : selectedRoom, "username": myUserName, "text": message})
   });
 };
 var updatePage = function(){
@@ -90,6 +92,8 @@ var updatePage = function(){
   $.ajax('https://api.parse.com/1/classes/messages/', {
   // $.ajax('https://api.parse.com/1/classes/messages/?order=-', {
     contentType: 'application/json',
+    type: 'GET',
+    data: {order: '-createdAt', limit: 100 },
     success: function(data){
       $('.roomNav .button').remove();
       $('.userNav .button').remove();
@@ -119,10 +123,9 @@ $('body')
 $('body')
   .on('click', '#submitMsg', function (event) {
     var msg = $('#submitMsg').value;
-    // submitTweet(msg);
-    console.log(msg);
-    // updatePage();
-    $().button('reset');
+    submitTweet(msg);
+    updatePage();
+    event.preventDefault();
   });
 
 
