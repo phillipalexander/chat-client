@@ -1,16 +1,20 @@
-// [ ] fix submit button.
+// [x] fix submit button.
 // [ ] Check for repeated tweets
 // [ ] Conform all stuff to text.
 // [ ] add additional handlebar template support...
 // [ ] change selected user filter to colored (css)
-// [ ] fir .ajax post.
-// [ ] set parameters about username and room selection. 
+// [x] fir .ajax post.
+// [x] set parameters about username and room selection. 
 
 var Chat = {
   Templates: {
-    listItem: Handlebars.compile('<li class="button" id="rooms{{key}}"><a href=# class="btn btn-mini rooms">{{key}}</a></li>')
+    roomItem: Handlebars.compile('<li class="button" id="rooms{{key}}"><a href=# class="btn btn-mini rooms">{{key}}</a></li>'),
+    userItem: Handlebars.compile('<li class="button" id="users{{key}}"><a href=# class="btn btn-mini users">{{key}}</a></li>'),
+    messageItem: Handlebars.compile('<tr class="tweets" id="{{objectKey}}"><td>{{username}}</td><td>{{message}}</td><td>{{createdAt}}</td></tr>')
   }
 };
+
+// '<tr class = "tweets" id = ' + value.objectKey + '><td>' + value.username + '</td><td>' + value.text.slice(value.text.indexOf(':') + 2) + '</td><td>' + moment(value.createdAt).fromNow() + '</td></tr>'
 
 //defaults
 var selectedUser = "everyone";
@@ -43,7 +47,7 @@ var populateChatRoomsSideBar = function(data){
   });
   _.each(uniqueRooms, function(value, key){
     if (key !== 'undefined'){
-      $('.roomNav').append(Chat.Templates.listItem({
+      $('.roomNav').append(Chat.Templates.roomItem({
         key: key
       })); // Change href.
     } else {
@@ -60,7 +64,10 @@ var populateUsersSideBar = function(currentChatRoom, data){
   });
   _.each(uniqueUsers, function(value, key){
     if (key !== 'undefined'){
-      $('.userNav').append('<li class=button id=' + key + '><a href=# class="btn btn-mini users">' + key + '</a></li>'); // Change href.
+      $('.userNav').append(Chat.Templates.userItem({
+        key: key
+      }));
+      // $('.userNav').append('<li class=button id=' + key + '><a href=# class="btn btn-mini users">' + key + '</a></li>'); // Change href.
       // $('.userNav').append('<li class="users" id="' + key + '"><strong>@' + key + '</strong></li>'); // Change href.
     } else {
       $('.userNav').append('<li class="button" id="' + 'anonymous' + '"><a href="#" class="btn btn-mini users">' + "anonymous" + '</a></li>'); // Change href.
@@ -71,11 +78,16 @@ var populateUsersSideBar = function(currentChatRoom, data){
 // <a href="#" class="btn btn-mini">key</a>
 
 var populateStream = function(currentChatRoom, currentUser, data){
-  var filteredTweets = {};
-  _.each(data.results , function(value){  
-    if (value.username === undefined) { value.username = 'anonymous';}
-    if ((value.room === currentChatRoom || currentChatRoom === 'all') && (value.username === currentUser || currentUser === '@everyone')){
-      $('#tweets').append('<tr class = "tweets" id = ' + value.objectKey + '><td>' + value.username + '</td><td>' + value.text.slice(value.text.indexOf(':') + 2) + '</td><td>' + moment(value.createdAt).fromNow() + '</td></tr>');
+  _.each(data.results , function(value){
+    if (value.username === undefined) { value.username = 'everyone';}
+    if (value.room === undefined) { value.room = 'all';}
+    if ((value.room === currentChatRoom || currentChatRoom === 'all') && (value.username === currentUser || currentUser === 'everyone')){
+      $('#tweets').append(Chat.Templates.messageItem({
+        objectKey: value.objectKey,
+        userName: value.username,
+        message: value.text.slice(value.text.indexOf(':') + 2),
+        createdAt :moment(value.createdAt).fromNow()
+      }));
     }
   });
 };
@@ -93,7 +105,7 @@ var updatePage = function(){
   // $.ajax('https://api.parse.com/1/classes/messages/?order=-', {
     contentType: 'application/json',
     type: 'GET',
-    data: {order: '-createdAt', limit: 100 },
+    data: {order: 'createdAt', limit: 100 },
     success: function(data){
       $('.roomNav .button').remove();
       $('.userNav .button').remove();
@@ -110,23 +122,23 @@ var updatePage = function(){
 updatePage();
 
 $('body')
-  .on('click', '.users', function (event) {
-    selectedUser = $(this).text();
-    updatePage();
-  });
+.on('click', '.users', function (event) {
+  selectedUser = $(this).text();
+  updatePage();
+});
 $('body')
-  .on('click', '.rooms', function (event) {
-    selectedRoom = $(this).text();
-    updatePage();
-  });
+.on('click', '.rooms', function (event) {
+  selectedRoom = $(this).text();
+  updatePage();
+});
 
 $('body')
-  .on('click', '#submitMsg', function (event) {
-    var msg = $('#submitMsg').value;
-    submitTweet(msg);
-    updatePage();
-    event.preventDefault();
-  });
+.on('click', '#submitMsg', function (event) {
+  var msg = $('#submitMsg').value;
+  submitTweet(msg);
+  updatePage();
+  event.preventDefault();
+});
 
 
 
