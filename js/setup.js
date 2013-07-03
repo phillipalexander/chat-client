@@ -126,13 +126,13 @@ var makeNewRoomButton = function(key){
 $('body')
 .on('click', '.friend', function (event) {
   myFriends.push($(this).attr('id'));
-  updatePage();
+  $('tr.tweets:contains(' + $(this).attr('id') + ')').addClass("info");
   event.preventDefault();
 });
 $('body')
-.on('click', '.friend', '.active', function (event) {
+.on('click', '.toggle.active', function (event) {
   myFriends.splice(myFriends.lastIndexOf($(this).attr('id')), 1);
-  updatePage();
+  $('tr.tweets:contains(' + $(this).attr('id') + ')').removeClass("info");
   event.preventDefault();
 });
 var toggleCorrectFriends = function(){
