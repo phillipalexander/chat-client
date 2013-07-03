@@ -1,6 +1,6 @@
 var Chat = {
   Templates: {
-    userItem: Handlebars.compile('<li class="button" id="users{{key}}"><a href=# class="btn btn-mini users">{{key}}</a></li>'),
+    userItem: Handlebars.compile('<li><div class="btn-group userButton"><button id="users{{key}}" class="btn users">{{key}}</button><button class="btn toggle">friend</button></div></li>'),
     roomItem: Handlebars.compile('<li class="button" id="rooms{{key}}"><a href=# class="btn btn-mini rooms">{{key}}</a></li>'),
     messageItem: Handlebars.compile('<tr class="tweets" id="{{objectKey}}"><td>{{userName}}</td><td>{{message}}</td><td>{{createdAt}}</td></tr>')
   }
@@ -40,10 +40,10 @@ var populateUsersSideBar = function(data){
       $('.userNav').append(Chat.Templates.userItem({
         key: key
       }));
-      // $('.userNav').append('<li class=button id=' + key + '><a href=# class="btn btn-mini users">' + key + '</a></li>'); // Change href.
-      // $('.userNav').append('<li class="users" id="' + key + '"><strong>@' + key + '</strong></li>'); // Change href.
     } else {
-      $('.userNav').append('<li class="button" id="' + 'anonymous' + '"><a href="#" class="btn btn-mini users">' + "anonymous" + '</a></li>'); // Change href.
+      $('.userNav').append(Chat.Templates.userItem({
+        key: anonymous
+      }));
     }
   });
 };
@@ -81,11 +81,9 @@ var updatePage = function(){
     type: 'GET',
     data: {order: '-createdAt', limit: 100 },
     success: function(data){
-      // $('.roomNav .button').remove();
-      $('.userNav .button').remove();
+      $('.userNav .userButton').remove();
       $('#tweets tr').remove();
       populateStream(data.results);
-      // populateChatRoomsSideBar();
       populateUsersSideBar(data.results);
     },
     error: function(data) {
