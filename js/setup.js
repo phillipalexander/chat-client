@@ -1,12 +1,10 @@
 var Chat = {
   Templates: {
-    userItem: Handlebars.compile('<li><div class="btn-group userButton"><button id="users{{key}}" class="btn users">{{key}}</button><button class="btn toggle">friend</button></div></li>'),
+    userItem: Handlebars.compile('<li><div class="btn-group userFriendButton" data-toggle="buttons-checkbox"><button id="users{{key}}" class="btn users">{{key}}</button><button id="{{key}}" class="btn toggle friend">friend</button></div></li>'),
     roomItem: Handlebars.compile('<li class="button" id="rooms{{key}}"><a href=# class="btn btn-mini rooms">{{key}}</a></li>'),
     messageItem: Handlebars.compile('<tr class="tweets" id="{{objectKey}}"><td>{{userName}}</td><td>{{message}}</td><td>{{createdAt}}</td></tr>')
   }
 };
-
-// '<tr class = "tweets" id = ' + value.objectKey + '><td>' + value.username + '</td><td>' + value.text.slice(value.text.indexOf(':') + 2) + '</td><td>' + moment(value.createdAt).fromNow() + '</td></tr>'
 
 //defaults
 var selectedUser = "everyone";
@@ -47,9 +45,6 @@ var populateUsersSideBar = function(data){
     }
   });
 };
-
-// <a href="#" class="btn btn-mini">key</a>
-
 var populateStream = function(data){
   _.each(data , function(value){
     if (value.username === undefined){ value.username = "anonymous";}
@@ -81,10 +76,11 @@ var updatePage = function(){
     type: 'GET',
     data: {order: '-createdAt', limit: 100 },
     success: function(data){
-      $('.userNav .userButton').remove();
+      $('.userNav .userFriendButton').remove();
       $('#tweets tr').remove();
       populateStream(data.results);
       populateUsersSideBar(data.results);
+      toggleCorrectFriends();
     },
     error: function(data) {
       console.log('Ajax request failed');
@@ -103,7 +99,11 @@ $('body')
   selectedRoom = $(this).text();
   updatePage();
 });
-
+$('body')
+.on('click', '.rooms', function (event) {
+  selectedRoom = $(this).text();
+  updatePage();
+});
 $('body')
 .on('click', '#submitMsg', function (event) {
   var msg = ' ' + $('#msgInput').val();
@@ -121,6 +121,29 @@ var makeNewRoomButton = function(key){
   $('.roomNav').append(Chat.Templates.roomItem({
     key: key
   }));
+  event.preventDefault();
+};
+$('body')
+.on('click', '.friend', function (event) {
+  myFriends.push($(this).attr('id'));
+  updatePage();
+  event.preventDefault();
+});
+$('body')
+.on('click', '.friend', '.active', function (event) {
+  myFriends.splice(myFriends.lastIndexOf($(this).attr('id')), 1);
+  updatePage();
+  event.preventDefault();
+});
+var toggleCorrectFriends = function(){
+  var userButtons = $('.toggle');
+  for (var i=0; i<myFriends.length; i++){
+    for (var j = 0; j < userButtons.length; j++){
+      if ( $userButtons[j].attr('id') ===  myFriends[i]){
+        userButtons[j].addClass('active');
+      }
+    }
+  }
 };
 
 
