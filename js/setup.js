@@ -1,7 +1,7 @@
 var Chat = {
   Templates: {
-    roomItem: Handlebars.compile('<li class="button" id="rooms{{key}}"><a href=# class="btn btn-mini rooms">{{key}}</a></li>'),
     userItem: Handlebars.compile('<li class="button" id="users{{key}}"><a href=# class="btn btn-mini users">{{key}}</a></li>'),
+    roomItem: Handlebars.compile('<li class="button" id="rooms{{key}}"><a href=# class="btn btn-mini rooms">{{key}}</a></li>'),
     messageItem: Handlebars.compile('<tr class="tweets" id="{{objectKey}}"><td>{{userName}}</td><td>{{message}}</td><td>{{createdAt}}</td></tr>')
   }
 };
@@ -10,8 +10,10 @@ var Chat = {
 
 //defaults
 var selectedUser = "everyone";
-var selectedRoom = "all";
+var selectedRoom = "messages";
 var myUserName;
+var myFriends = [];
+
 
 if(!/(&|\?)username=/.test(window.location.search)){
   var newSearch = window.location.search;
@@ -28,31 +30,10 @@ $.ajaxPrefilter(function(settings, _, jqXHR) {
   jqXHR.setRequestHeader("X-Parse-Application-Id", "voLazbq9nXuZuos9hsmprUz7JwM2N0asnPnUcI7r");
   jqXHR.setRequestHeader("X-Parse-REST-API-Key", "QC2F43aSAghM97XidJw8Qiy1NXlpL5LR45rhAVAf");
 });
-
-var populateChatRoomsSideBar = function(data){
-  // filter data by rooms.
-    // parse data, finding unique id's, recording in a hashmap.
-  // display set of filtered rooms.
-  var uniqueRooms = {};
-  _.each(data, function(value){
-    uniqueRooms[value.room] = true;
-  });
-  _.each(uniqueRooms, function(value, key){
-    if (key !== 'undefined'){
-      $('.roomNav').append(Chat.Templates.roomItem({
-        key: key
-      })); // Change href.
-    } else {
-      $('.roomNav').append('<li class=button id=' + 'homeless' + '><a href=# class="btn btn-mini rooms">' + 'homeless' + '</a></li>'); // Change href.
-    }
-  });
-};
-var populateUsersSideBar = function(currentChatRoom, data){
+var populateUsersSideBar = function(data){
   var uniqueUsers = {};
   _.each(data, function(value){
-    if (value.room === currentChatRoom || currentChatRoom === 'all'){
-      uniqueUsers[value.username] = true;
-    }
+    uniqueUsers[value.username] = true;
   });
   _.each(uniqueUsers, function(value, key){
     if (key !== 'undefined'){
@@ -69,50 +50,43 @@ var populateUsersSideBar = function(currentChatRoom, data){
 
 // <a href="#" class="btn btn-mini">key</a>
 
-var populateStream = function(currentChatRoom, currentUser, data){
+var populateStream = function(data){
   _.each(data , function(value){
     if (value.username === undefined){ value.username = "anonymous";}
-    if (value.room === undefined){ value.room = "roomless";}
     if (value.text === undefined){ value.text = '';}
-    if ((value.room === currentChatRoom || currentChatRoom === 'all') && (value.username === currentUser || currentUser === 'everyone')){
+    if ((value.username === selectedUser || selectedUser === 'everyone')){
       $('#tweets').append(Chat.Templates.messageItem({
         objectKey: value.objectKey,
         userName: value.username,
-        message: value.text.slice(value.text.indexOf(':') + 2),
+        message: value.text.slice(value.text.indexOf(':') + 1),
         createdAt :moment(value.createdAt).fromNow()
       }));
     }
   });
 };
 var submitTweet = function(message, callBack){
-  var correctRoom;
-  if (selectedRoom === 'all') {
-    correctRoom = 'homeless';
-  } else {
-    correctRoom = selectedRoom;
-  }
   $.ajax({
     contentType: 'application/json',
-    url: 'https://api.parse.com/1/classes/messages/',
+    url: 'https://api.parse.com/1/classes/' + selectedRoom + '/',
     type: "POST",
-    data: JSON.stringify({room : correctRoom, username: myUserName, text: message}),
+    data: JSON.stringify({username: myUserName, text: message}),
     success: callBack
   });
 };
 var updatePage = function(){
   // get all of the data
-  $.ajax('https://api.parse.com/1/classes/messages/', {
+  $.ajax('https://api.parse.com/1/classes/' + selectedRoom + '/', {
   // $.ajax('https://api.parse.com/1/classes/messages/?order=-', {
     contentType: 'application/json',
     type: 'GET',
     data: {order: '-createdAt', limit: 100 },
     success: function(data){
-      $('.roomNav .button').remove();
+      // $('.roomNav .button').remove();
       $('.userNav .button').remove();
       $('#tweets tr').remove();
-      populateStream(selectedRoom, selectedUser, data.results);
-      populateChatRoomsSideBar(data.results);
-      populateUsersSideBar(selectedRoom, data.results);
+      populateStream(data.results);
+      // populateChatRoomsSideBar();
+      populateUsersSideBar(data.results);
     },
     error: function(data) {
       console.log('Ajax request failed');
@@ -139,10 +113,17 @@ $('body')
   submitTweet(msg, updatePage);
   event.preventDefault();
 });
-
-
-
-
+$('body') // add a room
+.on('click', '#addRoom', function (event) {
+  makeNewRoomButton($('#inputRoom').val());
+  $('#inputRoom').val('');
+  event.preventDefault();
+});
+var makeNewRoomButton = function(key){
+  $('.roomNav').append(Chat.Templates.roomItem({
+    key: key
+  }));
+};
 
 
 

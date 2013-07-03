@@ -1,3 +1,14 @@
+<!-- Add Room selector input bar.
+  once a room has been added, add it to the list
+ x write code.
+
+Friend button.
+  add friend toggle to user bar.
+  Embolden friends messages.
+
+ -->
+
+
 <!doctype html>
 <html>
 
@@ -29,7 +40,7 @@
       <style>
       #wrapper {overflow: hidden;}
       #content {width:486px; margin-right:10px; float:left; min-height:1200px;}
-      #sidebar {width:284px; padding:10px; background: #eee; float:right; height:400px;}
+      #sidebar {width:284px; padding:10px; background: #eee; float:right; height:800px;}
       
       #portamento_container {float:left; position:relative;} /* take the positioning of the sidebar, and become the start point for the sidebar positioning */
       #portamento_container #sidebar {float:none; position:absolute;} /* no need to float anymore, become absolutely positoned */
@@ -80,10 +91,16 @@
 
 
         <div class="well well-small">
+
+        <form class="navbar-form pull-left">
+          <input id="inputRoom" type="text" class="span8">
+          <button id="addRoom" href="#" type="submit" class="btn">Submit</button>
+        </form>
+
           <ul class="roomNav nav-pills nav-stacked">
             <li class="nav-header">Chat Rooms:</li>
             <li class="pickRoom" id="">
-              <a href="#allRooms" class="btn btn-info rooms">all</a>
+              <a href="#allRooms" class="btn btn-info rooms">Cesspool</a>
             </li>
           </ul>
         </div>
