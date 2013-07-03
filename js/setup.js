@@ -1,7 +1,3 @@
-// submit message bug
-  // empty text box
-  // update stream
-
 var Chat = {
   Templates: {
     roomItem: Handlebars.compile('<li class="button" id="rooms{{key}}"><a href=# class="btn btn-mini rooms">{{key}}</a></li>'),
@@ -88,17 +84,24 @@ var populateStream = function(currentChatRoom, currentUser, data){
     }
   });
 };
-var submitTweet = function(message){
+var submitTweet = function(message, callBack){
+  var correctRoom;
+  if (selectedRoom === 'all') {
+    correctRoom = 'homeless';
+  } else {
+    correctRoom = selectedRoom;
+  }
   $.ajax({
     contentType: 'application/json',
-    url: 'https://api.parse.com/1/classes/test72472/',
+    url: 'https://api.parse.com/1/classes/messages/',
     type: "POST",
-    data: JSON.stringify({room : selectedRoom, username: myUserName, text: message})
+    data: JSON.stringify({room : correctRoom, username: myUserName, text: message}),
+    success: callBack
   });
 };
 var updatePage = function(){
   // get all of the data
-  $.ajax('https://api.parse.com/1/classes/test72472/', {
+  $.ajax('https://api.parse.com/1/classes/messages/', {
   // $.ajax('https://api.parse.com/1/classes/messages/?order=-', {
     contentType: 'application/json',
     type: 'GET',
@@ -131,9 +134,9 @@ $('body')
 
 $('body')
 .on('click', '#submitMsg', function (event) {
-  var msg = $('#submitMsg').val();
-  submitTweet(msg);
-  updatePage();
+  var msg = ' ' + $('#msgInput').val();
+  $('#msgInput').val('');
+  submitTweet(msg, updatePage);
   event.preventDefault();
 });
 
